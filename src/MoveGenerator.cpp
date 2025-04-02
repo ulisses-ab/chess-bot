@@ -1,18 +1,17 @@
 #include "./../headers/MoveGenerator.hpp"
 #include <iostream>
 
-std::vector<Board>mv;
-
-int ptype;
-
-bool MoveGenerator::turn;
-Board MoveGenerator::board;
-Board MoveGenerator::newBoard;
-std::vector<Board> *MoveGenerator::moves;
-
-std::vector<Board> *MoveGenerator::generatePossibleMoves(const Board &b) {
-    moves = new std::vector<Board>();
+MoveGenerator::MoveGenerator(const Board &b) {
     board = b;
+}
+
+std::vector<Board> *MoveGenerator::generatePossibleMoves(const Board &board) {
+    MoveGenerator mg(board);
+    return mg.generatePossibleMoves();
+}
+
+std::vector<Board> *MoveGenerator::generatePossibleMoves() {
+    moves = new std::vector<Board>();
     turn = board.getTurn();
 
     newBoard = board;
@@ -28,8 +27,6 @@ std::vector<Board> *MoveGenerator::generatePossibleMoves(const Board &b) {
 
         if((piece >> 3) ^ turn) 
             continue;
-
-        ptype = piece;
 
         switch(piece & 0b0111) {
             case PAWN:
@@ -242,12 +239,6 @@ bool notSafe(int x) {
 } 
 
 void MoveGenerator::pushMove(int start, int end) {
-    if(notSafe(start) || notSafe(end)) {
-        std::cout << "ALERTM ";
-        board.print();
-        std::cout << start << " " << end << " " << ptype << " ";
-    }
-
     moves->push_back(newBoard);
 
     if(board.getPiece(end) != NONE) {
@@ -259,12 +250,6 @@ void MoveGenerator::pushMove(int start, int end) {
 }
 
 void MoveGenerator::pushCastling(int start, int end) {
-    if(notSafe(start) || notSafe(end)) {
-        std::cout << "ALERTC ";
-        board.print();
-        std::cout << start << " " << end << " ";
-    }
-
     moves->push_back(newBoard);
 
     moves->back().removeCastlingRights(turn);
@@ -273,12 +258,6 @@ void MoveGenerator::pushCastling(int start, int end) {
 }
 
 void MoveGenerator::pushDoubleMove(int start, int end) {
-    if(notSafe(start) || notSafe(end)) {
-        std::cout << "ALERTD ";
-        board.print();
-        std::cout << start << " " << end << " ";
-    }
-
     moves->push_back(newBoard);
 
     moves->back().setPiece(end, PAWN | (turn << 3));
@@ -287,12 +266,6 @@ void MoveGenerator::pushDoubleMove(int start, int end) {
 }
 
 void MoveGenerator::pushEnPassant(int start) {
-    if(notSafe(start) || notSafe(board.enPassantTarget)) {
-        std::cout << "ALERTE ";
-        board.print();
-        std::cout << start << " " << board.enPassantTarget << " ";
-    }
-
     moves->push_back(newBoard);
 
     moves->back().setPiece(board.enPassantTarget, PAWN | (turn << 3));
@@ -301,12 +274,6 @@ void MoveGenerator::pushEnPassant(int start) {
 }
 
 void MoveGenerator::pushPawnPromotion(int start, int end, int promotion) {
-    if(notSafe(start) || notSafe(end)) {
-        std::cout << "ALERTP ";
-        board.print();
-        std::cout << start << " " << end << " ";
-    }
-
     moves->push_back(newBoard);
 
     moves->back().setPiece(end, promotion | (turn << 3));

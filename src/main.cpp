@@ -11,7 +11,7 @@ int main() {
 
     int t = 6;
     while(t--) {
-        b = Minimax::findBestMove(b, 7);
+        b = Minimax::findBestMove(b, 6);
         b.print(true);
     }
  
