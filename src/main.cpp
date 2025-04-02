@@ -1,20 +1,19 @@
-#include "./../headers/Board.hpp"
+#include "./../headers/Minimax.hpp"
 #include <iostream>
 #include <typeinfo>
+#include <stdexcept>
+
+using namespace std;
 
 int main() {
-    Board* b = new Board();
+    Board b;
+    b.print(true);
 
-    std::vector<Move>* moves = b->possibleMoves();
-
-    b->print();
-
-
-    for(auto move : *moves) {
-        b->pushMove(move);
-        b->print();
-        b->popMove(move);
+    int t = 6;
+    while(t--) {
+        b = Minimax::findBestMove(b, 7);
+        b.print(true);
     }
-
+ 
     return 0;
 }

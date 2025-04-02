@@ -11,38 +11,29 @@ enum Color {
 };
 
 enum Type {
+    NONE,
     PAWN,
     KNIGHT,
     BISHOP,
     ROOK,
     QUEEN,
     KING,
-    NONE,
 };
 
-enum FullPiece {
-    BLACK_PAWN,
-    WHITE_PAWN,
-    BLACK_KNIGHT,
-    WHITE_KNIGHT,
-    BLACK_BISHOP,
-    WHITE_BISHOP,
-    BLACK_ROOK,
-    WHITE_ROOK,
-    BLACK_QUEEN,
-    WHITE_QUEEN,
-    BLACK_KING,
-    WHITE_KING,
-    BLACK_NONE,
-    WHITE_NONE
-};
+enum Full {
+    BLACK_PAWN      = 0b0001,
+    BLACK_KNIGHT    = 0b0010,
+    BLACK_BISHOP    = 0b0011,
+    BLACK_ROOK      = 0b0100,
+    BLACK_QUEEN     = 0b0101,
+    BLACK_KING      = 0b0110,
 
-union Piece {
-    int8 raw;
-    struct {
-        bool color : 1;
-        int8 type : 3;
-    };
+    WHITE_PAWN      = 0b1001,
+    WHITE_KNIGHT    = 0b1010,
+    WHITE_BISHOP    = 0b1011,
+    WHITE_ROOK      = 0b1100,
+    WHITE_QUEEN     = 0b1101,
+    WHITE_KING      = 0b1110,
 };
 
 #endif

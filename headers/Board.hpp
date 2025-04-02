@@ -1,35 +1,54 @@
 #include "Piece.hpp"
-#include "Move.hpp"
+#include <array>
 #include <vector>
-#include <stack>
 
 #ifndef BOARD
 #define BOARD
 
 class Board {
-    Piece board[64];
-    std::vector<int> pieceSquares[12];
-    std::stack<std::pair<int, int>> enPassantTargetStack;
-    std::stack<int> halfmoveResetStack;
-    int totalHalfmoves;
-    bool turn;
-    bool kingHasMoved;
-    bool blackKRookHasMoved, blackQRookHasMoved, whiteKRookHasMoved, whiteQRookHasMoved;
 public:
+    std::array<uint8_t, 32> board;
+    uint8_t flags;
+    int8_t enPassantTarget;
+    int8_t halfmoveClock;
+
     Board();
-    void print();
-    void printDetails();
-    std::vector<Move>* possibleMoves();
-    void pushMove(Move move);
-    void popMove(Move move);
+    Board(std::string fen);
+    void print(bool details = false) const;
+    int evaluate() const;
+    std::vector<Board> *generatePossibleMoves() const;
+    std::string toFen() const;
+
+    bool getTurn() const {
+        return flags & 0b00001;
+    }
+
+    bool getCastlingRight(bool color, bool side) const {
+        return flags & (0b00010 << (color * 2 + side));
+    }
+
+    void removeCastlingRight(bool color, bool side) {
+        flags &= ~(0b00010 << (color * 2 + side));
+    }
+
+    void removeCastlingRights(bool color) {
+        flags &= ~(0b00110 << (color * 2));
+    }
+
+    int getPiece(int square) const {
+        return (board[square/2] >> (4*(square%2))) & 0b1111;
+    }
+
+    int getPiece(int row, int column) const {
+        return getPiece(8*row + column);
+    }
+
+    void setPiece(int square, int piece) {
+        board[square/2] &= 0b11110000 >> (4*(square%2));
+        board[square/2] |= piece << (4*(square%2));
+    }
 private:
-    void addPossiblePawnMoves(std::vector<Move>* moves, int square);
-    void addPossibleKnightMoves(std::vector<Move>* moves, int square);
-    void addPossibleBishopMoves(std::vector<Move>* moves, int square);
-    void addPossibleRookMoves(std::vector<Move>* moves, int square);
-    void addPossibleQueenMoves(std::vector<Move>* moves, int square);
-    void addPossibleKingMoves(std::vector<Move>* moves, int square);
-    void popNumber(std::vector<int>& v, int number);
+    static const char pieceChar[];
 };
 
 #endif
