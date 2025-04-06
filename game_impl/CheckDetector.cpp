@@ -1,6 +1,6 @@
 #include "CheckDetector.hpp"
 
-#include "../util.hpp"
+#include "../util/util.hpp"
 
 bool CheckDetector::findPinnedAndCheck(std::vector<Square> &pinned, std::vector<Square> &stoppers) {
     kingInCheck = false;
@@ -45,7 +45,7 @@ void CheckDetector::findPinnedAndCheckInLoop(Offset offset, bool isDiagonal) {
     Square pinned = NONE;
     std::vector<Square> visited;
 
-    Utils::loop(game.kingSquare(), offset, [this, &pinned, &visited, isDiagonal, NONE](Square current) {
+    loop(game.kingSquare(), offset, [this, &pinned, &visited, isDiagonal, NONE](Square current) {
         Piece piece = game.getPiece(current);
         visited.push_back(current);
 
@@ -76,7 +76,7 @@ void CheckDetector::findPinnedAndCheckInLoop(Offset offset, bool isDiagonal) {
 
 template <size_t n>
 void CheckDetector::findCheckInOffsets(const std::array<Offset, n> &offsets) {
-    Utils::loop(game.kingSquare(), offsets, [this](Square current) {
+    loop(game.kingSquare(), offsets, [this](Square current) {
         if(game.getPiece(current) == Piece(game.enemy(), KNIGHT)) {
             pushCheck(current);
         }
@@ -86,7 +86,7 @@ void CheckDetector::findCheckInOffsets(const std::array<Offset, n> &offsets) {
 
 void CheckDetector::pushCheck(std::vector<Square> &visited) {
     if(kingInCheck) {
-        Utils::intersect<Square>(*checkStoppers, visited);
+        intersect<Square>(*checkStoppers, visited);
     }
     else {
         kingInCheck = true;
@@ -96,7 +96,7 @@ void CheckDetector::pushCheck(std::vector<Square> &visited) {
 
 void CheckDetector::pushCheck(Square square) {
     if(kingInCheck) {
-        Utils::intersect<Square>(*checkStoppers, square);
+        intersect<Square>(*checkStoppers, square);
     }
     else {
         kingInCheck = true;
@@ -108,7 +108,7 @@ namespace {
     bool scanCheck(const Game &game, Offset offset, bool isDiagonal) {
         bool check = false;
         
-        Utils::loop(game.kingSquare(), offset, [&game, &check](Square current) {
+        loop(game.kingSquare(), offset, [&game, &check](Square current) {
             Piece piece = game.getPiece(current);
     
             if(piece.notEmpty()) {

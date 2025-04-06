@@ -14,7 +14,7 @@ private:
     MoveGenerator moveGenerator;
     Evaluator evaluator;
 
-    int negamax(int depth, int alpha, int beta);
+    int negamax(int depth, int precedingEval, int alpha, int beta);
     void orderMoves(std::vector<Move> *moves);
     int highestEvaluation(std::vector<Move> *moves);
 };

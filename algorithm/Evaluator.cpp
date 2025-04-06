@@ -258,3 +258,19 @@ int Evaluator::evaluateTerminalState() {
 
     return checkDetector.isKingInCheck() ? -60000 : 0; 
 }
+
+int Evaluator::evaluateGame() {
+    int eval;
+    for(Square i = 0; i.isSafe(); i += 1) {
+        eval += evaluatePiece(i);
+    }
+    return eval;
+}
+
+int Evaluator::evaluatePiece(Square square) {
+    Piece piece = game.getPiece(square);
+
+    int eval = pieceValue[piece.type] + pst(square);
+
+    return eval * (piece.color == WHITE ? 1 : -1);
+}

@@ -1,5 +1,5 @@
 #include "MoveGenerator.hpp"
-#include "../util.hpp"
+#include "../util/util.hpp"
 
 std::vector<Move> *MoveGenerator::generatePossibleMoves() {
     moves = new std::vector<Move>();
@@ -165,7 +165,7 @@ void MoveGenerator::tryNonCapturingMove(Square start, Square end, Move::MoveActi
 
 template <size_t n>
 void MoveGenerator::tryOffsets(Square square, const std::array<Offset, n> &offsets, Move::MoveAction action) {
-    Utils::loop(square, offsets, [this, square, action](Square current) {
+    loop(square, offsets, [this, square, action](Square current) {
         tryRegularMove(square, current, action);
         return CONTINUE_LOOP;
     });
@@ -174,7 +174,7 @@ void MoveGenerator::tryOffsets(Square square, const std::array<Offset, n> &offse
 void MoveGenerator::tryLoop(Square start, Offset offset, Move::MoveAction action) {
     Square end = start;
 
-    Utils::loop(start, offset, [this, start, action](Square current) {
+    loop(start, offset, [this, start, action](Square current) {
         Piece piece = game.getPiece(current);
 
         if(piece.notEmpty()) {

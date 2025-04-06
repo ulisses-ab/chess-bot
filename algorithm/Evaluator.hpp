@@ -9,6 +9,7 @@ public:
 
     int evaluateMove(Move move);
     int evaluateTerminalState();
+    int evaluateGame();
 private:
     const Game &game;
 
@@ -23,6 +24,8 @@ private:
     int evaluateLongCastling(Move move);
     int evaluatePromotion(Move move);
     int evaluateEnPassant(Move move);
+
+    int evaluatePiece(Square square);
 
     int evaluateDisplacement(Square start, Square end);
     int pst(Piece piece, Square square);

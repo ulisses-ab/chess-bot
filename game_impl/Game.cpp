@@ -20,13 +20,13 @@ Game::Game() : board{{
     {BLACK, PAWN}, {BLACK, PAWN}, {BLACK, PAWN}, {BLACK, PAWN},
     {BLACK, ROOK}, {BLACK, KNIGHT}, {BLACK, BISHOP}, {BLACK, KING},
     {BLACK, QUEEN}, {BLACK, BISHOP}, {BLACK, KNIGHT}, {BLACK, ROOK},
-}}, turn{WHITE}, direction_(8), enPassantTarget{-1}, halfmoveCounter{0}, phase{300}, kingSquare_{59, 3} {};
+}}, turn{WHITE}, enPassantTarget{-1}, halfmoveCounter{0}, phase{300}, kingSquare_{59, 3} {};
  
-Game::Game(string fen) : turn{WHITE}, direction_(8), enPassantTarget{-1}, halfmoveCounter{0}, phase{300}, kingSquare_{59, 3} {
-    int square = 63;
+Game::Game(string fen) : board{{{NO_COLOR, EMPTY}}}, turn{WHITE}, enPassantTarget{-1}, halfmoveCounter{0}, phase{300}, kingSquare_{59, 3} {
+    Square square = 63;
 
     int i = 0;
-    for(; true; i++, square--) {
+    for(; true; i++, square -= 1) {
         char c = fen[i];
 
         if(c == ' ') {
@@ -34,8 +34,12 @@ Game::Game(string fen) : turn{WHITE}, direction_(8), enPassantTarget{-1}, halfmo
         }
 
         if(c == '/') {
-            square++;
+            square += 1;
             continue;
+        }
+
+        if(isdigit(c)) {
+            square -= c - '1';
         }
 
         board[square] = Piece::fromChar(c);
@@ -200,7 +204,6 @@ void Game::pushMove(Move move) {
     pushActions(move);
 
     turn = flip(turn);
-    direction_ = -direction_;
 }
 
 void Game::pushActions(Move move) {
@@ -208,7 +211,7 @@ void Game::pushActions(Move move) {
 
     switch (move.action) {
     case Move::SET_EN_PASSANT_TARGET:
-        enPassantTarget = move.start + direction_;
+        enPassantTarget = move.start + direction();
     case Move::RESET_HALFMOVE_COUNTER:
         resetHalfmoveCounter();
         break;
@@ -256,7 +259,7 @@ void Game::pushPromotion(Move move) {
 
 void Game::pushEnPassant(Move move) {
     movePiece(move.start, move.end);
-    board[move.end-direction_] = Piece::empty(); 
+    board[move.end-direction()] = Piece::empty(); 
 }
 
 void Game::popMove() {
@@ -264,7 +267,6 @@ void Game::popMove() {
     pastMoves.pop();
 
     turn = flip(turn);
-    direction_ = -direction_;
 
     if(getPiece(move.start).type == KING) {
         kingSquare_[turn] = move.start;
@@ -299,7 +301,7 @@ void Game::popMove() {
 
 void Game::popActions(Move move) {
     if(!pastMoves.empty() && pastMoves.top().action == Move::SET_EN_PASSANT_TARGET) {
-        enPassantTarget = pastMoves.top().start + direction_;
+        enPassantTarget = pastMoves.top().start + direction();
     }
 
     switch (move.action) {
@@ -325,16 +327,23 @@ void Game::popCapture(Move move) {
 
     movePiece(move.end, move.start);
     board[move.end] = Piece(flip(turn), move.captured);
+
+    switch (move.captured) {
+        case KNIGHT: phase += 16; break;
+        case BISHOP: phase += 16; break;
+        case ROOK: phase += 32; break;
+        case QUEEN: phase += 48; break;
+    }
 }
 
 void Game::popShortCastling(Move move) {
-    movePiece(move.end + 2, move.start);
-    movePiece(move.start - 1, move.end);
+    movePiece(move.end, move.start);
+    movePiece(move.start - 1, move.end - 1);
 }
 
 void Game::popLongCastling(Move move) {
-    movePiece(move.end - 2, move.start);
-    movePiece(move.start + 1, move.end);
+    movePiece(move.end, move.start);
+    movePiece(move.start + 1, move.end + 2);
 }
 
 void Game::popPromotion(Move move) {

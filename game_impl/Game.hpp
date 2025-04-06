@@ -65,8 +65,8 @@ public:
         return std::min(std::max(phase, 0), 255);
     }
 
-    int direction() const {
-        return turn == WHITE ? 8 : -8;
+    Offset direction() const {
+        return turn == WHITE ? Offset(1, 0) : Offset(-1, 0);
     }
 
     int relativeRow(int row) {
@@ -98,7 +98,6 @@ private:
     Square enPassantTarget;
     int halfmoveCounter;
     Color turn;
-    int direction_;
     int phase;
 
     std::stack<Move> pastMoves;

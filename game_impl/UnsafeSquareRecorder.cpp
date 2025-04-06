@@ -1,6 +1,6 @@
 #include "UnsafeSquareRecorder.hpp"
 
-#include "../util.hpp"
+#include "../util/util.hpp"
 
 void UnsafeSquareRecorder::record(std::vector<Square> &enemySquares, std::vector<Square> &unsafeSquares) {
     unsafe = &unsafeSquares;
@@ -66,7 +66,7 @@ void UnsafeSquareRecorder::recordKingAttacks(Square square) {
 
 template <size_t n>
 void UnsafeSquareRecorder::recordOffsetAttacks(Square square, const std::array<Offset, n> &offsets) {
-    Utils::loop(square, offsets, [this](Square current){
+    loop(square, offsets, [this](Square current){
         pushUnsafe(current);
         return CONTINUE_LOOP;
     });

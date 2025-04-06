@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <utility>
-#include "../util.hpp"
+#include "../util/util.hpp"
 
 void InvalidMoveDetector::filterMoves(std::vector<Move> &moves, std::vector<Square> &enemySquares, Square kingP) {
     std::vector<Square> pinnedPieces, checkStoppers;
@@ -25,10 +25,10 @@ void InvalidMoveDetector::filterMovesWhichCauseACheck(std::vector<Move> &moves, 
    
     for(int i = 0; i < moves.size(); i++) {
         if(
-            Utils::isIn(pinnedPieces, moves[i].start) ||
-            (game.getPiece(moves[i].start).type == KING && Utils::isIn(unsafeSquares, moves[i].end))
+            isIn(pinnedPieces, moves[i].start) ||
+            (game.getPiece(moves[i].start).type == KING && isIn(unsafeSquares, moves[i].end))
         ) {
-            Utils::pop<Move>(moves, i);
+            pop<Move>(moves, i);
             i--;
         }
     }  
@@ -38,10 +38,10 @@ void InvalidMoveDetector::filterMovesWhichDontStopCheck(std::vector<Move> &moves
     for(int i = 0; i < moves.size(); i++) {
         if(
             game.getPiece(moves[i].start).type != KING &&
-            !Utils::isIn(checkStoppers, moves[i].end) 
+            !isIn(checkStoppers, moves[i].end) 
 
         ) {
-            Utils::pop<Move>(moves, i);
+            pop<Move>(moves, i);
             i--;
         }
     }
