@@ -66,7 +66,7 @@ void UnsafeSquareRecorder::recordKingAttacks(Square square) {
 
 template <size_t n>
 void UnsafeSquareRecorder::recordOffsetAttacks(Square square, const std::array<Offset, n> &offsets) {
-    loop(square, offsets, [this](Square current){
+    Utils::loop(square, offsets, [this](Square current){
         pushUnsafe(current);
         return CONTINUE_LOOP;
     });

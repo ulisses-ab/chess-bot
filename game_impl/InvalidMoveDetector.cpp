@@ -25,10 +25,10 @@ void InvalidMoveDetector::filterMovesWhichCauseACheck(std::vector<Move> &moves, 
    
     for(int i = 0; i < moves.size(); i++) {
         if(
-            isIn(pinnedPieces, moves[i].start) ||
-            (game.getPiece(moves[i].start).type == KING && isIn(unsafeSquares, moves[i].end))
+            Utils::isIn(pinnedPieces, moves[i].start) ||
+            (game.getPiece(moves[i].start).type == KING && Utils::isIn(unsafeSquares, moves[i].end))
         ) {
-            pop<Move>(moves, i);
+            Utils::pop<Move>(moves, i);
             i--;
         }
     }  
@@ -38,10 +38,10 @@ void InvalidMoveDetector::filterMovesWhichDontStopCheck(std::vector<Move> &moves
     for(int i = 0; i < moves.size(); i++) {
         if(
             game.getPiece(moves[i].start).type != KING &&
-            !isIn(checkStoppers, moves[i].end) 
+            !Utils::isIn(checkStoppers, moves[i].end) 
 
         ) {
-            pop<Move>(moves, i);
+            Utils::pop<Move>(moves, i);
             i--;
         }
     }

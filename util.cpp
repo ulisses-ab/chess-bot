@@ -3,18 +3,18 @@
 #include <algorithm>
 
 template <typename T>
-void pop(std::vector<T> &v, int index) {
+void Utils::pop(std::vector<T> &v, int index) {
     v[index] = v[v.size() - 1];
     v.pop_back();
 }
 
 template <typename T>
-bool isIn(const std::vector<T> &v, T el) {
+bool Utils::isIn(const std::vector<T> &v, T el) {
     return std::binary_search(v.begin(), v.end(), el);
 }
 
 template <typename T>
-void intersect(std::vector<Square> &v1, std::vector<Square> &v2) {
+void Utils::intersect(std::vector<Square> &v1, std::vector<Square> &v2) {
     std::sort(v2.begin(), v2.end());
 
     for(int i = 0; i < v1.size(); i++) {
@@ -26,7 +26,7 @@ void intersect(std::vector<Square> &v1, std::vector<Square> &v2) {
 }
 
 template <typename T>
-void intersect(std::vector<T> &v, T el) {
+void Utils::intersect(std::vector<T> &v, T el) {
     for(int i = 0; i < v.size(); i++) {
         if(v[i] != el) {
             pop<T>(v, i);
@@ -35,7 +35,7 @@ void intersect(std::vector<T> &v, T el) {
     }
 };
 
-void loop(Square square, Offset offset, std::function<bool(Square)> f) {
+void Utils::loop(Square square, Offset offset, std::function<bool(Square)> f) {
     while(square.offsetIsSafe(offset)) {
         square += offset;
 
@@ -45,7 +45,7 @@ void loop(Square square, Offset offset, std::function<bool(Square)> f) {
 }
 
 template <size_t n>
-void loop(Square square, const std::array<Offset, n> &offsets, std::function<bool(Square)> f) {
+void Utils::loop(Square square, const std::array<Offset, n> &offsets, std::function<bool(Square)> f) {
     for(auto offset : offsets) {
         if(square.offsetIsSafe(offset)) {
             Square end = square + offset;
